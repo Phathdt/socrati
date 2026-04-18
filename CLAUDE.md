@@ -39,6 +39,7 @@ elsewhere; depend on `logger.Logger` instead.
 | `make format`     | gofmt / goimports / golines / gofumpt  |
 | `make docker-up`  | `docker compose up --build -d`         |
 | `make docker-down`| `docker compose down`                  |
+| `make install-hooks`| Install lefthook pre-commit hooks    |
 
 Run directly:
 

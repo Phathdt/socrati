@@ -53,6 +53,7 @@ make deps           # go mod tidy
 make format         # gofmt + goimports + golines + gofumpt
 make docker-up      # docker compose up --build -d
 make docker-down    # docker compose down
+make install-hooks  # install lefthook pre-commit hooks
 go test ./...       # run tests
 ```
 
