@@ -32,10 +32,19 @@ run_if_installed golines -w -m 120 "${FILES[@]}"
 # Re-stage the (possibly) reformatted files so the commit includes changes.
 git add -- "${FILES[@]}"
 
-# Run go vet on the whole module — catches obvious bugs before commit.
+# Run go vet only on packages containing staged files.
 if command -v go >/dev/null 2>&1; then
-    echo "▶ pre-commit: go vet ./..."
-    go vet ./...
+    PKGS=()
+    seen=""
+    for f in "${FILES[@]}"; do
+        pkg="./$(dirname "$f")"
+        if [[ "$seen" != *"|$pkg|"* ]]; then
+            PKGS+=("$pkg")
+            seen="$seen|$pkg|"
+        fi
+    done
+    echo "▶ pre-commit: go vet ${PKGS[*]}"
+    go vet "${PKGS[@]}"
 fi
 
 echo "✓ pre-commit: ok"
