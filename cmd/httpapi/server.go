@@ -8,22 +8,23 @@ import (
 	"socrati/pkg/logger"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/google/uuid"
 )
 
-// RequestIDKey is the locals key for the per-request ID.
-const RequestIDKey = "request_id"
-
-// NewApp builds the Fiber app with /health and request logging middleware.
+// NewApp builds the Fiber app with default middleware and routes.
 func NewApp(log logger.Logger) *fiber.App {
 	app := fiber.New(fiber.Config{
 		ReadTimeout:           5 * time.Second,
 		DisableStartupMessage: true,
 	})
 
+	// Order matters: RequestID first → InjectRequestID wraps response →
+	// RequestLogger logs after handler completes.
+	app.Use(RequestID())
+	app.Use(InjectRequestID())
 	app.Use(RequestLogger(log))
 
 	app.Get("/health", healthHandler)
+	app.Post("/ask", askHandler)
 
 	return app
 }
@@ -54,29 +55,4 @@ func Run(ctx context.Context, app *fiber.App, addr string, log logger.Logger) er
 
 func healthHandler(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{"status": "ok"})
-}
-
-// RequestLogger injects a request_id and logs latency_ms for each request.
-func RequestLogger(log logger.Logger) fiber.Handler {
-	return func(c *fiber.Ctx) error {
-		reqID := c.Get("X-Request-ID")
-		if reqID == "" {
-			reqID = uuid.NewString()
-		}
-		c.Set("X-Request-ID", reqID)
-		c.Locals(RequestIDKey, reqID)
-
-		start := time.Now()
-		err := c.Next()
-		latency := time.Since(start)
-
-		log.Info("http_request",
-			"request_id", reqID,
-			"method", c.Method(),
-			"path", c.Path(),
-			"status", c.Response().StatusCode(),
-			"latency_ms", latency.Milliseconds(),
-		)
-		return err
-	}
 }

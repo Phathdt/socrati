@@ -1,4 +1,4 @@
-.PHONY: run build clean deps docker-up docker-down dev dev-setup format format-check
+.PHONY: run build clean deps docker-up docker-down dev dev-setup format format-check install-hooks uninstall-hooks
 
 # Source .env file if it exists
 ifneq (,$(wildcard ./.env))
@@ -55,4 +55,20 @@ dev: docker-up
 	@sleep 3
 	@make run
 
-dev-setup: format deps
+dev-setup: format deps install-hooks
+
+# --- Git hooks ---
+
+HOOK_SRC := scripts/pre-commit.sh
+HOOK_DST := .git/hooks/pre-commit
+
+install-hooks:
+	@if [ ! -d .git ]; then echo "not a git repo"; exit 1; fi
+	@mkdir -p .git/hooks
+	@ln -sf ../../$(HOOK_SRC) $(HOOK_DST)
+	@chmod +x $(HOOK_SRC)
+	@echo "✅ pre-commit hook installed → $(HOOK_DST)"
+
+uninstall-hooks:
+	@rm -f $(HOOK_DST)
+	@echo "✅ pre-commit hook removed"
