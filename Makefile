@@ -57,18 +57,14 @@ dev: docker-up
 
 dev-setup: format deps install-hooks
 
-# --- Git hooks ---
-
-HOOK_SRC := scripts/pre-commit.sh
-HOOK_DST := .git/hooks/pre-commit
+# --- Git hooks (lefthook) ---
 
 install-hooks:
-	@if [ ! -d .git ]; then echo "not a git repo"; exit 1; fi
-	@mkdir -p .git/hooks
-	@ln -sf ../../$(HOOK_SRC) $(HOOK_DST)
-	@chmod +x $(HOOK_SRC)
-	@echo "✅ pre-commit hook installed → $(HOOK_DST)"
+	@command -v lefthook >/dev/null || { echo "lefthook not found. Install: brew install lefthook"; exit 1; }
+	@lefthook install
+	@echo "✅ lefthook hooks installed"
 
 uninstall-hooks:
-	@rm -f $(HOOK_DST)
-	@echo "✅ pre-commit hook removed"
+	@command -v lefthook >/dev/null || { echo "lefthook not found"; exit 0; }
+	@lefthook uninstall
+	@echo "✅ lefthook hooks removed"

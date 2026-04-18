@@ -1,0 +1,25 @@
+# https://lefthook.dev/
+# Install: `make install-hooks` (runs `lefthook install`).
+
+pre-commit:
+  parallel: true
+  commands:
+    gofmt:
+      glob: "*.go"
+      run: gofmt -w {staged_files}
+      stage_fixed: true
+    goimports:
+      glob: "*.go"
+      run: goimports -w {staged_files}
+      stage_fixed: true
+    gofumpt:
+      glob: "*.go"
+      run: gofumpt -extra -w {staged_files}
+      stage_fixed: true
+    golines:
+      glob: "*.go"
+      run: golines -w -m 120 {staged_files}
+      stage_fixed: true
+    govet:
+      glob: "*.go"
+      run: go vet ./...
