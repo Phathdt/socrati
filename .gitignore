@@ -1,5 +1,9 @@
 /coverage.*
 /bin
+
+# Override global ignores — these are part of this repo
+!CLAUDE.md
+!README.md
 # Swagger generated files (make swagger outputs to static/)
 static/docs.go
 static/swagger.json
