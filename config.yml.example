@@ -1,0 +1,9 @@
+env: "development"
+
+server:
+  host: "localhost"
+  port: 4000
+
+logger:
+  level: "debug"
+  format: "text"

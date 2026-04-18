@@ -1,0 +1,21 @@
+/coverage.*
+/bin
+# Swagger generated files (make swagger outputs to static/)
+static/docs.go
+static/swagger.json
+static/swagger.yaml
+.serena/cache
+.claude
+main
+socrati
+plans
+.claude_sessions
+repomix-output.xml
+
+.env
+config.yml
+.idea/
+release-manifest.json
+data/
+repomix-output.txt
+proto/third_party/
