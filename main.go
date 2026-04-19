@@ -36,6 +36,24 @@ func main() {
 				},
 				Action: mycli.RunServe,
 			},
+			{
+				Name:      "embed",
+				Usage:     "Embed a piece of text via the configured embedder",
+				ArgsUsage: "[text...]",
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "config",
+						Aliases: []string{"c"},
+						Value:   "config.yml",
+						Usage:   "Configuration file path",
+					},
+					&cli.StringFlag{
+						Name:  "text",
+						Usage: "Text to embed (overrides positional args)",
+					},
+				},
+				Action: mycli.RunEmbed,
+			},
 		},
 		Action: func(c *cli.Context) error {
 			return cli.ShowAppHelp(c)

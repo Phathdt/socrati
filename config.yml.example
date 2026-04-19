@@ -7,3 +7,12 @@ server:
 logger:
   level: "debug"
   format: "text"
+
+embedder:
+  provider: "voyage"
+  model: "voyage-4-lite"
+  base_url: "https://api.voyageai.com/v1"
+  api_key: "" # set via VOYAGE_API_KEY or EMBEDDER__API_KEY
+  timeout_ms: 5000
+  max_retries: 3
+  max_chars: 8000

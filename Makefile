@@ -1,4 +1,4 @@
-.PHONY: run build clean deps docker-up docker-down dev dev-setup format format-check install-hooks uninstall-hooks
+.PHONY: run build clean deps docker-up docker-down dev dev-setup format format-check install-hooks uninstall-hooks test embed
 
 # Source .env file if it exists
 ifneq (,$(wildcard ./.env))
@@ -16,6 +16,18 @@ build:
 
 clean:
 	rm -rf bin/
+
+# --- Tests ---
+
+test:
+	go test ./... -count=1
+
+# --- Embedder smoke test ---
+# Usage: make embed TEXT="hello world"
+TEXT ?= hello
+
+embed: build
+	./bin/socrati embed --text "$(TEXT)"
 
 # --- Docker ---
 
