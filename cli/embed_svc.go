@@ -8,11 +8,9 @@ import (
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
+	"socrati/cmd/shared"
 	"socrati/config"
-	"socrati/pkg/embedder"
-	"socrati/pkg/logger"
 
 	urfavecli "github.com/urfave/cli/v2"
 )
@@ -33,19 +31,9 @@ func RunEmbed(c *urfavecli.Context) error {
 		return errors.New("text is required: pass as positional arg or --text")
 	}
 
-	log := logger.New(cfg.Logger.Format, cfg.Logger.Level)
+	log := shared.InitLogger(cfg)
 
-	if cfg.Embedder.Provider != "voyage" {
-		return fmt.Errorf("unsupported embedder provider: %q", cfg.Embedder.Provider)
-	}
-	emb, err := embedder.NewVoyage(embedder.VoyageConfig{
-		APIKey:     cfg.Embedder.APIKey,
-		Model:      cfg.Embedder.Model,
-		BaseURL:    cfg.Embedder.BaseURL,
-		Timeout:    time.Duration(cfg.Embedder.TimeoutMS) * time.Millisecond,
-		MaxRetries: cfg.Embedder.MaxRetries,
-		MaxChars:   cfg.Embedder.MaxChars,
-	}, log)
+	emb, err := shared.InitEmbedder(cfg, log)
 	if err != nil {
 		return fmt.Errorf("build embedder: %w", err)
 	}
@@ -58,11 +46,11 @@ func RunEmbed(c *urfavecli.Context) error {
 		return fmt.Errorf("embed: %w", err)
 	}
 
-	fmt.Printf("model=%s dim=%d preview=[%s ...]\n",
-		cfg.Embedder.Model,
-		len(vec),
-		formatPreview(vec, 5),
-	)
+	log.With(
+		"model", cfg.Embedder.Model,
+		"dim", len(vec),
+		"preview", formatPreview(vec, 5),
+	).Info("embed complete")
 	return nil
 }
 

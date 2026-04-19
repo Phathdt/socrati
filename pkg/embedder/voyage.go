@@ -162,6 +162,63 @@ func (v *VoyageEmbedder) EmbedAs(ctx context.Context, text string, kind InputTyp
 	return vec, nil
 }
 
+// EmbedBatch embeds many texts in a single API call to avoid rate limits.
+func (v *VoyageEmbedder) EmbedBatch(ctx context.Context, texts []string, kind InputType) ([][]float32, error) {
+	if len(texts) == 0 {
+		return nil, errors.New("voyage: batch is empty")
+	}
+	inputs := make([]string, 0, len(texts))
+	for i, t := range texts {
+		cleaned, err := v.prepareInput(t)
+		if err != nil {
+			return nil, fmt.Errorf("item %d: %w", i, err)
+		}
+		inputs = append(inputs, cleaned)
+	}
+
+	body := voyageRequest{Input: inputs, Model: v.cfg.Model}
+	if kind != InputTypeNone {
+		body.InputType = string(kind)
+	}
+
+	var out voyageResponse
+	var errBody voyageError
+
+	start := time.Now()
+	resp, err := v.client.R().
+		SetContext(ctx).
+		SetBody(body).
+		SetSuccessResult(&out).
+		SetErrorResult(&errBody).
+		Post("/embeddings")
+	if err != nil {
+		return nil, fmt.Errorf("voyage: request: %w", err)
+	}
+	if resp.IsErrorState() {
+		return nil, fmt.Errorf("voyage: status %d: %s", resp.StatusCode, errBody.String())
+	}
+	if len(out.Data) != len(inputs) {
+		return nil, fmt.Errorf("voyage: expected %d embeddings, got %d", len(inputs), len(out.Data))
+	}
+
+	vecs := make([][]float32, len(out.Data))
+	for _, d := range out.Data {
+		if d.Index < 0 || d.Index >= len(vecs) {
+			return nil, fmt.Errorf("voyage: invalid index %d", d.Index)
+		}
+		vecs[d.Index] = d.Embedding
+	}
+	if v.log != nil {
+		v.log.Info("voyage embed batch ok",
+			"model", v.cfg.Model,
+			"count", len(vecs),
+			"tokens", out.Usage.TotalTokens,
+			"latency_ms", time.Since(start).Milliseconds(),
+		)
+	}
+	return vecs, nil
+}
+
 func (v *VoyageEmbedder) prepareInput(text string) (string, error) {
 	trimmed := strings.TrimSpace(text)
 	if trimmed == "" {

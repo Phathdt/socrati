@@ -15,11 +15,16 @@ type Config struct {
 	Server   ServerConfig   `mapstructure:"server"`
 	Logger   LoggerConfig   `mapstructure:"logger"`
 	Embedder EmbedderConfig `mapstructure:"embedder"`
+	Database DatabaseConfig `mapstructure:"database"`
 }
 
 type ServerConfig struct {
 	Host string `mapstructure:"host"`
 	Port int    `mapstructure:"port"`
+}
+
+type DatabaseConfig struct {
+	URI string `mapstructure:"uri"`
 }
 
 type LoggerConfig struct {
@@ -64,6 +69,7 @@ func LoadConfig(path string) (*Config, error) {
 		"embedder.timeout_ms":  "EMBEDDER__TIMEOUT_MS",
 		"embedder.max_retries": "EMBEDDER__MAX_RETRIES",
 		"embedder.max_chars":   "EMBEDDER__MAX_CHARS",
+		"database.uri":         "DATABASE__URI",
 	}
 	for key, env := range envBindings {
 		if err := v.BindEnv(key, env); err != nil {

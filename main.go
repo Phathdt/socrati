@@ -54,6 +54,47 @@ func main() {
 				},
 				Action: mycli.RunEmbed,
 			},
+			{
+				Name:  "migrate",
+				Usage: "Run database migrations (goose)",
+				Flags: []cli.Flag{
+					&cli.StringFlag{Name: "config", Aliases: []string{"c"}, Value: "config.yml"},
+				},
+				Subcommands: []*cli.Command{
+					{Name: "up", Usage: "Apply pending migrations", Action: mycli.RunMigrateUp},
+					{Name: "down", Usage: "Rollback last migration", Action: mycli.RunMigrateDown},
+					{Name: "status", Usage: "Show migration status", Action: mycli.RunMigrateStatus},
+				},
+			},
+			{
+				Name:  "seed",
+				Usage: "Embed sample products and insert into Postgres",
+				Flags: []cli.Flag{
+					&cli.StringFlag{Name: "config", Aliases: []string{"c"}, Value: "config.yml"},
+					&cli.StringFlag{Name: "file", Usage: "Path to JSON seed file (optional)"},
+				},
+				Action: mycli.RunSeed,
+			},
+			{
+				Name:  "bulk-seed",
+				Usage: "Insert N synthetic rows (random unit vectors) for perf testing",
+				Flags: []cli.Flag{
+					&cli.StringFlag{Name: "config", Aliases: []string{"c"}, Value: "config.yml"},
+					&cli.IntFlag{Name: "count", Aliases: []string{"n"}, Value: 1000, Usage: "Rows to insert"},
+				},
+				Action: mycli.RunBulkSeed,
+			},
+			{
+				Name:      "search",
+				Usage:     "Embed a query and return top-K similar products",
+				ArgsUsage: "[query...]",
+				Flags: []cli.Flag{
+					&cli.StringFlag{Name: "config", Aliases: []string{"c"}, Value: "config.yml"},
+					&cli.StringFlag{Name: "query", Aliases: []string{"q"}, Usage: "Search query"},
+					&cli.IntFlag{Name: "k", Value: 5, Usage: "Top K results"},
+				},
+				Action: mycli.RunSearch,
+			},
 		},
 		Action: func(c *cli.Context) error {
 			return cli.ShowAppHelp(c)

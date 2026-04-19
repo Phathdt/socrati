@@ -1,0 +1,14 @@
+[
+  { "content": "Wireless noise-cancelling over-ear headphones with 30h battery life", "metadata": { "category": "audio", "brand": "Sony", "price": 349.99 } },
+  { "content": "Mechanical keyboard with hot-swappable switches and RGB backlight", "metadata": { "category": "peripherals", "brand": "Keychron", "price": 129.0 } },
+  { "content": "Lightweight aluminum laptop stand adjustable for ergonomic posture", "metadata": { "category": "accessories", "brand": "Rain Design", "price": 59.95 } },
+  { "content": "USB-C docking station with dual 4K HDMI, Ethernet, and 100W PD passthrough", "metadata": { "category": "accessories", "brand": "CalDigit", "price": 299.0 } },
+  { "content": "Ergonomic vertical mouse with programmable buttons and adjustable DPI", "metadata": { "category": "peripherals", "brand": "Logitech", "price": 89.99 } },
+  { "content": "4K ultra-wide curved monitor with USB-C hub and KVM support", "metadata": { "category": "display", "brand": "LG", "price": 899.0 } },
+  { "content": "Insulated stainless steel water bottle keeps drinks cold for 24 hours", "metadata": { "category": "lifestyle", "brand": "Hydro Flask", "price": 39.95 } },
+  { "content": "Portable espresso maker, hand-pumped, fits a single shot, travel friendly", "metadata": { "category": "kitchen", "brand": "Wacaco", "price": 79.0 } },
+  { "content": "Running shoes with breathable mesh upper and responsive foam midsole", "metadata": { "category": "footwear", "brand": "Nike", "price": 149.0 } },
+  { "content": "Smartwatch with heart-rate sensor, GPS, and 7-day battery life", "metadata": { "category": "wearables", "brand": "Garmin", "price": 249.99 } },
+  { "content": "Leather messenger bag with padded laptop compartment fits 15-inch devices", "metadata": { "category": "bags", "brand": "Herschel", "price": 119.0 } },
+  { "content": "Electric height-adjustable standing desk, 60x30 inches, memory presets", "metadata": { "category": "furniture", "brand": "Uplift", "price": 699.0 } }
+]

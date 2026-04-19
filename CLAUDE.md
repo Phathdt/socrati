@@ -72,6 +72,18 @@ Logger formats: `text` (colored, default), `json`, `plain` (uncolored).
 - New CLI commands go in `cli/<name>_svc.go` with action `Run<Name>` exported.
 - New HTTP routes go in `cmd/httpapi/`.
 
+### Logging
+
+- **Always use `logger.Logger`** for user-facing output and diagnostics —
+  never `fmt.Print*`, `log.Print*`, or `println`. `fmt.Errorf` for wrapping
+  errors is fine; the CLI layer should log, not print.
+- Obtain a logger via `shared.InitLogger(cfg)`; pass it down to constructors.
+- Prefer structured fields: `log.With("key", value).Info("event")` rather
+  than formatted strings. Keep keys short and lowercase.
+- Provider initialisation belongs in `cmd/shared/providers.go` (e.g.
+  `InitDatabase`, `InitEmbedder`) — CLI handlers should not re-wire config
+  → provider plumbing.
+
 ## Adding a new endpoint
 
 1. Add handler in `cmd/httpapi/` (or new sub-package under `cmd/`).

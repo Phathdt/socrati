@@ -8,6 +8,9 @@ logger:
   level: "debug"
   format: "text"
 
+database:
+  uri: "postgresql://postgres:postgres@localhost:5432/socrati?sslmode=disable"
+
 embedder:
   provider: "voyage"
   model: "voyage-4-lite"
